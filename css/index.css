@@ -7,10 +7,15 @@ body {
 
 	padding: 0;
 	margin: 0;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 form {
 	width: 100%;
+	max-width: 270px;
 	margin-top: 20px;
 
 	display: flex;
@@ -32,10 +37,10 @@ input[type="number"] {
 
 .inputs-container {
 	width: 100%;
-	max-width: 330px;
+	max-width: 270px;
 
-	padding: 0;
-	margin: 0;
+	/*padding: 10px 10px;
+	margin: 10px 10px;*/
 
 	display: flex;
 	justify-content: center;
@@ -50,18 +55,7 @@ input[type="number"] {
 	height: 30px;
 	padding: 0px 10px;
 
-	border: 2px solid rgba(0, 0, 0, 0.3);
-	border-radius: 21px;
-}
-
-form > input {
 	width: 100%;
-	max-width: 330px;
-
-	margin: 0;
-
-	height: 30px;
-	padding: 0px 10px;
 
 	border: 2px solid rgba(0, 0, 0, 0.3);
 	border-radius: 21px;
@@ -84,7 +78,13 @@ form button {
 	cursor: pointer;
 }
 
-form p {
+form textarea {
+	width: 100%;
+	max-width: 250px;
 	padding: 0;
 	margin: 0;
+}
+
+form textarea:focus {
+	outline: none;
 }
