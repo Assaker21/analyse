@@ -1,4 +1,6 @@
 function toIEEE754(v, ebits, fbits) {
+	v = math.evaluate(v);
+
 	var bias = (1 << (ebits - 1)) - 1;
 
 	// Compute sign, exponent, fraction
@@ -7,7 +9,7 @@ function toIEEE754(v, ebits, fbits) {
 		e = (1 << bias) - 1;
 		f = 1;
 		s = 0;
-	} else if (v === Infinity || v === -Infinity) {
+	} else if (v === math.Infinity || v === -math.Infinity) {
 		e = (1 << bias) - 1;
 		f = 0;
 		s = v < 0 ? 1 : 0;
@@ -17,15 +19,15 @@ function toIEEE754(v, ebits, fbits) {
 		s = 1 / v === -Infinity ? 1 : 0;
 	} else {
 		s = v < 0;
-		v = Math.abs(v);
+		v = math.abs(v);
 
-		if (v >= Math.pow(2, 1 - bias)) {
-			var ln = Math.min(Math.floor(Math.log(v) / Math.LN2), bias);
+		if (v >= math.pow(2, 1 - bias)) {
+			var ln = math.min(math.floor(math.log(v) / math.LN2), bias);
 			e = ln + bias;
-			f = v * Math.pow(2, fbits - ln) - Math.pow(2, fbits);
+			f = v * math.pow(2, fbits - ln) - math.pow(2, fbits);
 		} else {
 			e = 0;
-			f = v / Math.pow(2, 1 - bias - fbits);
+			f = v / math.pow(2, 1 - bias - fbits);
 		}
 	}
 
@@ -112,6 +114,8 @@ function toIEEE754DoubleString(v) {
 
 var input = document.querySelector("#input");
 var button = document.querySelector("#button");
+var leftButton = document.querySelector("#left-button");
+var rightButton = document.querySelector("#right-button");
 var output = document.querySelector("#output");
 var power = document.querySelector("#power");
 var mantissa = document.querySelector("#mantissa");
@@ -126,7 +130,54 @@ button.addEventListener("click", function (event) {
 		.join("");
 
 	var newS = s.slice(0, 1) + " " + s.slice(1, parseFloat(power.value) + 1) + " " + s.slice(parseFloat(power.value) + 1, parseFloat(power.value) + 1 + parseFloat(mantissa.value));
-	console.log(parseFloat(power.value) + 1);
+
+	output.innerHTML = newS;
+});
+
+leftButton.addEventListener("click", function (event) {
+	event.preventDefault();
+
+	math.config({
+		number: "BigNumber",
+		precision: 100
+	});
+	const a = math.bignumber(math.pow(2, -parseFloat(mantissa.value)));
+	const b = math.evaluate(input.value.toString());
+
+	input.value = math.subtract(b, a);
+
+	var s = toIEEE754(input.value.toString(), power.value, mantissa.value)
+		.map(function (n) {
+			for (n = n.toString(2); n.length < 8; n = "0" + n);
+			return n;
+		})
+		.join("");
+
+	var newS = s.slice(0, 1) + " " + s.slice(1, parseFloat(power.value) + 1) + " " + s.slice(parseFloat(power.value) + 1, parseFloat(power.value) + 1 + parseFloat(mantissa.value));
+
+	output.innerHTML = newS;
+});
+
+rightButton.addEventListener("click", function (event) {
+	event.preventDefault();
+
+	math.config({
+		number: "BigNumber",
+		precision: 100
+	});
+	const a = math.bignumber(math.pow(2, -parseFloat(mantissa.value)));
+	const b = math.evaluate(input.value.toString());
+
+	input.value = math.add(b, a);
+
+	var s = toIEEE754(input.value.toString(), power.value, mantissa.value)
+		.map(function (n) {
+			for (n = n.toString(2); n.length < 8; n = "0" + n);
+			return n;
+		})
+		.join("");
+
+	var newS = s.slice(0, 1) + " " + s.slice(1, parseFloat(power.value) + 1) + " " + s.slice(parseFloat(power.value) + 1, parseFloat(power.value) + 1 + parseFloat(mantissa.value));
 
 	output.innerHTML = newS;
 });
