@@ -2,6 +2,8 @@
 	--transition-time: 0.1s;
 	--selected-color: rgba(0, 0, 0, 1);
 	--deselected-color: rgba(0, 0, 0, 0.6);
+	--font: "Manrope", "Courier New", sans-serif;
+	--font2: "Roboto Mono", "Courier New", sans-serif;
 }
 
 input::-webkit-outer-spin-button,
@@ -21,7 +23,7 @@ body {
 	padding: 0;
 	margin: 0;
 
-	font-family: "Roboto", "Open Sans", sans-serif;
+	font-family: var(--font);
 	color: var(--deselected-color);
 	transition: all var(--transition-time) ease-in-out;
 }
@@ -57,9 +59,12 @@ body {
 .container h2 {
 	margin: 0;
 	padding: 0;
-	font-weight: 600;
+	font-weight: 800;
 	font-size: 18px;
 	color: var(--deselected-color); /*here*/
+
+	font-family: var(--font);
+
 	transition: all var(--transition-time) ease-in-out;
 }
 
@@ -90,7 +95,9 @@ body {
 	outline: none;
 	border: 1px solid var(--deselected-color); /*here*/
 	border-radius: 0;
+	font-size: 14px;
 	color: var(--deselected-color);
+	font-family: var(--font2);
 	transition: all var(--transition-time) ease-in-out;
 }
 
@@ -105,8 +112,10 @@ body {
 	outline: none;
 	border: 1px solid var(--deselected-color); /*here*/
 	border-radius: 0;
+	font-size: 14px;
 	resize: none;
 	color: var(--deselected-color);
+	font-family: var(--font2);
 	transition: all var(--transition-time) ease-in-out;
 }
 
@@ -123,6 +132,13 @@ body {
 	border-radius: 0;
 	background-color: white;
 	color: var(--deselected-color);
+	font-family: var(--font);
+
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
 	transition: all var(--transition-time) ease-in-out;
 }
 
@@ -134,6 +150,20 @@ body {
 	background-color: white;
 	color: var(--selected-color);
 	cursor: pointer;
+}
+
+.horizontal-container button svg {
+	width: 18px;
+	height: 18px;
+}
+
+.horizontal-container button svg path {
+	fill: var(--deselected-color);
+	transition: all var(--transition-time) ease-in-out;
+}
+
+.horizontal-container button:hover > svg > path {
+	fill: var(--selected-color);
 }
 
 @media screen and (max-width: 600px) {
