@@ -57,7 +57,6 @@ function toIEEE754(v, ebits, fbits) {
 
 function fromIEEE754(bits, ebits, fbits) {
 	if (bits.length != ebits + fbits + 1) {
-		console.log("Error: Invalid number of bits.");
 		return "Error: Invalid number of bits.";
 	}
 
@@ -80,7 +79,6 @@ function fromIEEE754(bits, ebits, fbits) {
 
 	var e = bits.slice(1, ebits + 1);
 	e = parseInt(e, 2);
-	console.log("e: " + e);
 
 	var f = 0;
 	for (var i = ebits + 1; i < ebits + fbits + 1; i++) {
@@ -88,15 +86,9 @@ function fromIEEE754(bits, ebits, fbits) {
 		f = math.add(f, math.multiply(bit, math.pow(2, -(i - ebits))));
 	}
 
-	console.log("f: " + f);
-
 	var s = bits[0] == 0 ? 1 : -1;
 
-	console.log("s: " + s);
-
 	var k = math.pow(2, ebits - 1) - 1;
-
-	console.log("k: " + k);
 
 	return math.multiply(math.multiply(s, math.add(1, f)), math.pow(2, e - k));
 }
@@ -146,6 +138,56 @@ function setCaretPosition(txt) {
 	}
 }
 
+function addBinary(a, b) {
+	var i = a.length - 1;
+	var j = b.length - 1;
+	var carry = 0;
+	var result = "";
+	while (i >= 0 || j >= 0) {
+		var m = i < 0 ? 0 : a[i] | 0;
+		var n = j < 0 ? 0 : b[j] | 0;
+		carry += m + n;
+		result = (carry % 2) + result;
+		carry = (carry / 2) | 0;
+		i--;
+		j--;
+	}
+	if (carry !== 0) {
+		result = carry + result;
+	}
+	return result;
+}
+
+function subBinary(a, b) {
+	while (a.length < b.length) {
+		a = "0" + a;
+	}
+	while (b.length < a.length) {
+		b = "0" + b;
+	}
+
+	let result = "";
+	let carry = 0;
+	for (let i = a.length - 1; i >= 0; i--) {
+		let bitA = parseInt(a[i]);
+		let bitB = parseInt(b[i]);
+
+		let diff = bitA - bitB - carry;
+		if (diff < 0) {
+			diff += 2;
+			carry = 1;
+		} else {
+			carry = 0;
+		}
+
+		result = diff.toString() + result;
+	}
+
+	var max = Math.max(a.length, b.length);
+
+	return result.replace(/^0+/, "").padStart(max, "0");
+}
+
 var decimalToFpr = document.querySelector("#Decimal-FPR");
 var fprToDecimal = document.querySelector("#FPR-Decimal");
 
@@ -168,6 +210,7 @@ var r_decimalToFpr = decimalToFpr.querySelector(".right-button");
 var r_fprToDecimal = fprToDecimal.querySelector(".right-button");
 
 var caretPos = 0;
+var lastLength = 0;
 
 DecimalToFpr();
 FprToDecimal();
@@ -199,24 +242,52 @@ function FprToDecimal() {
 	var mantissa = parseInt(m_fprToDecimal.value);
 	var exponent = parseInt(e_fprToDecimal.value);
 
-	/*getCaretPosition(i_fprToDecimal);*/
+	getCaretPosition(i_fprToDecimal);
 
 	i_fprToDecimal.value = i_fprToDecimal.value.replaceAll(" ", "").replaceAll(/[^01]/g, "");
 
 	if (i_fprToDecimal.value.length == 0) return;
-	else if (i_fprToDecimal.value.length < 2) i_fprToDecimal.value = i_fprToDecimal.value;
-	else if (i_fprToDecimal.value.length < exponent + 2) {
-		i_fprToDecimal.value = i_fprToDecimal.value.slice(0, 1) + " " + i_fprToDecimal.value.slice(1, exponent + 1);
-		caretPos += 1;
-	} else {
-		i_fprToDecimal.value = i_fprToDecimal.value.slice(0, 1) + " " + i_fprToDecimal.value.slice(1, exponent + 1) + " " + i_fprToDecimal.value.slice(exponent + 1, exponent + 1 + mantissa);
-		caretPos += 2;
-	}
-	/*setCaretPosition(i_fprToDecimal);*/
+	else if (i_fprToDecimal.value.length > exponent + mantissa + 1) i_fprToDecimal.value = i_fprToDecimal.value.slice(0, exponent + mantissa + 1);
 
 	o_fprToDecimal.value = fromIEEE754(i_fprToDecimal.value.replaceAll(" ", "").replaceAll(/[^01]/g, "").toString(), exponent, mantissa);
 }
 
 i_fprToDecimal.addEventListener("input", function (event) {
+	FprToDecimal();
+});
+
+l_decimalToFpr.addEventListener("click", function () {
+	var nextLower = "";
+	if (i_decimalToFpr.value != 0) {
+		nextLower = subBinary(o_decimalToFpr.value.replaceAll(" ", "").replaceAll(/[^01]/g, ""), "1");
+	}
+	i_decimalToFpr.value = fromIEEE754(nextLower, parseInt(e_decimalToFpr.value), parseInt(m_decimalToFpr.value));
+	DecimalToFpr();
+});
+
+r_decimalToFpr.addEventListener("click", function () {
+	var nextHigher = "";
+	if (i_decimalToFpr.value != 0) {
+		nextHigher = addBinary(o_decimalToFpr.value.replaceAll(" ", "").replaceAll(/[^01]/g, ""), "1");
+	}
+	i_decimalToFpr.value = fromIEEE754(nextHigher, parseInt(e_decimalToFpr.value), parseInt(m_decimalToFpr.value));
+	DecimalToFpr();
+});
+
+l_fprToDecimal.addEventListener("click", function () {
+	var nextLower = "";
+	if (o_fprToDecimal.value != 0) {
+		nextLower = subBinary(i_fprToDecimal.value.replaceAll(" ", "").replaceAll(/[^01]/g, ""), "1");
+	}
+	i_fprToDecimal.value = nextLower;
+	FprToDecimal();
+});
+
+r_fprToDecimal.addEventListener("click", function () {
+	var nextHigher = "";
+	if (o_fprToDecimal.value != 0) {
+		nextHigher = addBinary(i_fprToDecimal.value.replaceAll(" ", "").replaceAll(/[^01]/g, ""), "1");
+	}
+	i_fprToDecimal.value = nextHigher;
 	FprToDecimal();
 });
