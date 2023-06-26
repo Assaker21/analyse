@@ -4,29 +4,53 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-		<link rel="stylesheet" href="css/index.css" />
-		<script defer src="scripts/mathjs.js"></script>
-		<script defer src="scripts/index.js"></script>
+		<link rel="stylesheet" href="css/home.css" />
 
-		<title>lesgo v0.02</title>
+		<script defer src="scripts/mathjs.js"></script>
+		<script defer src="scripts/home.js"></script>
+
+		<title>Analyse v0.21</title>
 	</head>
 	<body>
-		<div>
-			<form>
-				<div class="inputs-container">
-					<input id="power" type="number" name="power" value="11" />
-					<input id="mantissa" type="number" name="mantissa" value="52" />
+		<section class="grid">
+			<form id="FPR-Decimal" class="container">
+				<h2>FPR to Decimal</h2>
+				<div class="vertical-container">
+					<div class="horizontal-container">
+						<input class="exponent" type="number" name="power" value="11" />
+						<input class="mantissa" type="number" name="mantissa" value="52" />
+					</div>
+					<div class="horizontal-container">
+						<textarea class="input" name="input" rows="3" cols="1"></textarea>
+					</div>
+					<div class="horizontal-container">
+						<button class="left-button" type="button" value="left"><</button>
+						<button class="right-button" type="button" value="right">></button>
+					</div>
+					<div class="horizontal-container">
+						<input class="output" readonly name="number" value="0" />
+					</div>
 				</div>
-				<div class="inputs-container">
-					<input id="input" type="number" name="number" />
-				</div>
-				<div class="inputs-container">
-					<button id="left-button" type="button" value="left"><</button>
-					<button id="button" type="submit" value="submit">Submit</button>
-					<button id="right-button" type="button" value="right">></button>
-				</div>
-				<textarea rows="5" id="output" readonly></textarea>
 			</form>
-		</div>
+			<form id="Decimal-FPR" class="container">
+				<h2>Decimal to FPR</h2>
+				<div class="vertical-container">
+					<div class="horizontal-container">
+						<input class="exponent" type="number" name="power" value="11" />
+						<input class="mantissa" type="number" name="mantissa" value="52" />
+					</div>
+					<div class="horizontal-container">
+						<input class="input" type="number" name="number" value="0" />
+					</div>
+					<div class="horizontal-container">
+						<button class="left-button" type="button" value="left"><</button>
+						<button class="right-button" type="button" value="right">></button>
+					</div>
+					<div class="horizontal-container">
+						<textarea class="output" name="output" rows="3" cols="1" readonly></textarea>
+					</div>
+				</div>
+			</form>
+		</section>
 	</body>
 </html>
